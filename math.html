@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Multiplication Practice</title>
+	<style>
+    		body {
+        		font-family: 'Courier New', Courier, monospace;
+    			}
+
+	    	#container {
+        		max-width: 800px;
+        		margin: 0 auto;
+    			}
+
+    		#questions {
+        		display: flex;
+        		flex-wrap: wrap;
+        		justify-content: space-between;
+    			}
+
+    		.question {
+        		width: 10%; /* Change the width to fit 5 columns */
+        		margin: 5px;
+        		padding: 15px;
+        		border: 1px solid #ddd;
+        		box-sizing: border-box;
+        		font-size: 18px; /* Double the font size */
+        		display: flex;
+        		flex-direction: column;
+        		align-items: flex-end;
+    			}
+
+    		.operation {
+        		display: flex;
+        		align-items: center;
+    			}
+
+    		.equals-line {
+ 		      border-bottom: 1px solid #000;
+        		width: 100%;
+        		margin: 2px 0;
+    			}
+
+    		input[type="number"] {
+        		width: 100%;
+        		font-family: 'Courier New', Courier, monospace;
+        		font-size: 22px; /* Double the font size */
+        		text-align: right;
+        		border: none;
+        		appearance: none;
+        		-moz-appearance: textfield;
+    			}
+
+    		input[type="number"]::-webkit-inner-spin-button {
+        		display: none;
+    			}
+
+    		#randomizeButton,
+    		#printButton,
+    		#checkAnswersButton {
+        	margin: 20px;
+    		}
+	</style>
+
+
+</head>
+
+<body>
+    <div id="container">
+        <h1>Multiplication Practice</h1>
+        <div id="questions"></div>
+        <button id="randomizeButton">Randomize Questions</button>
+        <button id="printButton">Print Worksheet</button>
+        <button id="checkAnswersButton">Check Answers</button>
+    </div>
+
+    <script>
+        const container = document.getElementById("container");
+        const questions = document.getElementById("questions");
+        const randomizeButton = document.getElementById("randomizeButton");
+        const printButton = document.getElementById("printButton");
+        const checkAnswersButton = document.getElementById("checkAnswersButton");
+
+        function generateRandomNumber(max) {
+            return Math.floor(Math.random() * max) + 1;
+        }
+
+        function generateQuestions() {
+            questions.innerHTML = "";
+            for (let i = 0; i < 48; i++) {
+                const num1 = generateRandomNumber(10);
+                const num2 = generateRandomNumber(10);
+                const correctAnswer = num1 * num2;
+                const question = document.createElement("div");
+                question.classList.add("question");
+                question.setAttribute("data-answer", correctAnswer);
+                question.innerHTML = `
+                    <div>${num1}</div>
+                    <div class="operation">x ${num2}</div>
+                    <div class="equals-line"></div>
+                    <input type="number" class="user-answer" min="0">
+                    <div class="result" style="display:none;"></div>
+                `;
+                questions.appendChild(question);
+            }
+        }
+
+        function checkAnswers() {
+            const userAnswers = document.querySelectorAll(".user-answer");
+            userAnswers.forEach((userAnswer, index) => {
+                const question = userAnswer.closest(".question");
+                const correctAnswer = parseInt(question.getAttribute("data-answer"));
+                const enteredAnswer = parseInt(userAnswer.value);
+                const result = question.querySelector(".result");
+                if (enteredAnswer === correctAnswer) {
+                    result.innerHTML = "&#10004;";
+                    result.style.color = "green";
+                } else {
+                    result.innerHTML = "&#10008;";
+                    result.style.color = "red";
+                }
+                result.style.display = "block";
+            });
+        }
+
+        randomizeButton.addEventListener("click", () => {
+            generateQuestions();
+        });
+
+        printButton.addEventListener("click", () => {
+            window.print();
+        });
+
+        checkAnswersButton.addEventListener("click", () => {
+            checkAnswers();
+        });
+
+        generateQuestions();
+    </script>
+</body>
+</html>
